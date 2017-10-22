@@ -1,6 +1,4 @@
-package com.example.subwayapp.jsonfile;
-
-import java.util.ArrayList;
+package com.example.subwayapp.jsonrealtimeinfo;
 
 /**
  * Created by 정인섭 on 2017-10-19.

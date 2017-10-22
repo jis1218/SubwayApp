@@ -1,4 +1,4 @@
-package com.example.subwayapp.jsonfile;
+package com.example.subwayapp.jsonrealtimeinfo;
 
 /**
  * Created by 정인섭 on 2017-10-19.

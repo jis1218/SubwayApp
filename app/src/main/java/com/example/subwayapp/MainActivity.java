@@ -1,18 +1,17 @@
 package com.example.subwayapp;
 
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.Spinner;
 
+import com.example.subwayapp.jsonrealtimeinfo.RealtimeArrivalList;
 import com.example.subwayapp.model.GetStationInfo;
 import com.example.subwayapp.recyclerViewAdapter.RecyclerViewAdapter;
 import com.example.subwayapp.recyclerViewAdapter.TabLayoutListener;
@@ -74,9 +73,11 @@ public class MainActivity extends AppCompatActivity implements TabLayoutListener
     }
 
     @Override
-    public void tabLayoutInflater(Bundle bundle){
-        infoFragment.setArguments(bundle);
+    public void tabLayoutInflater(RealtimeArrivalList realtimeArrivalList[]){
+        //infoFragment.setArguments(bundle);
         getSupportFragmentManager().beginTransaction().addToBackStack("").add(R.id.container, infoFragment).commit();
+        infoFragment.setInstance(realtimeArrivalList);
+
 
     }
 

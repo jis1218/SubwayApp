@@ -8,56 +8,63 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.subwayapp.jsonfile.RealtimeArrivalList;
+import com.example.subwayapp.jsonrealtimeinfo.RealtimeArrivalList;
+import com.example.subwayapp.jsonrealtimeinfo.SubwayInfoJSON;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class InfoFragment extends Fragment implements AsyncToFragment {
+public class InfoFragment extends Fragment{
     TabLayout tabLayout;
     TextView textView, tvStnTwoAhead, tvStnOneAhead, tvStnCurrent;
     ServerConnect serverConnect;
     RealtimeArrivalList realtimeArrivalList[];
+    SubwayInfoJSON subwayInfoJSON;
+
+    String tabLayoutStatus = "상행선";
+    String upWay[];
+    String downWay[];
+    String upWayInfo;
+    String prevStnUp;
+    String downWayInfo;
+    String prevStnDown;
 
     public InfoFragment() {
         // Required empty public constructor
     }
 
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-
-
-
-
         View view = LayoutInflater.from(getContext()).inflate(R.layout.fragment_info, container, false); //두번째 인자에 Viewgroup인 container를 넣어야 부모를 인식함,
         // 세번째 인자에 false를 하면 부모에에종속되지 않음, true를 하면 부모에 종속됨, The specified child already has a parent.와 같은 에러가 뜸
         view.setBackgroundColor(Color.WHITE);
+        setInstance(realtimeArrivalList);
         initView(view);
         tabLayoutSelectListener();
-
+        dividePrevStn();
+        defaultSetTextView();
         setTextView();
+
         return view;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
+    public void defaultSetTextView(){
+        textView.setText(realtimeArrivalList[0].getStatnNm());
+        tvStnCurrent.setText(realtimeArrivalList[0].getStatnNm());
+        tabLayout.getTabAt(0).setText(prevStnDown + " 방향");
+        tabLayout.getTabAt(1).setText(prevStnUp + " 방향");
 
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        String stationName = getArguments().getString("stnName");
-        serverConnect = new ServerConnect();
-        serverConnect.load("http://swopenapi.seoul.go.kr/api/subway/696e614f506a69733131384952495246/" +
-                "json/realtimeStationArrival/1/5/" + stationName, this);
+    public void setTextView(){
+        if(tabLayoutStatus.equals("상행선")){
+            tvStnOneAhead.setText(prevStnUp);
+        }else{
+            tvStnOneAhead.setText(prevStnDown);
+        }
     }
 
     private void initView(View view) {
@@ -70,16 +77,33 @@ public class InfoFragment extends Fragment implements AsyncToFragment {
         tabLayout.addTab(tabLayout.newTab().setText("하행선"));
     }
 
-    public void setTextView(){
-        textView.setText(realtimeArrivalList[0].getStatnNm());
-        tvStnCurrent.setText(realtimeArrivalList[0].getStatnFid());
+    public void dividePrevStn(){
+
+        upWay = realtimeArrivalList[0].getTrainLineNm().split(" - ");
+        downWay = realtimeArrivalList[1].getTrainLineNm().split(" - ");
+
+        upWayInfo = upWay[0];
+        prevStnUp = upWay[1].substring(0, upWay[1].length()-2);
+        downWayInfo = downWay[0];
+        prevStnDown = downWay[1].substring(0, downWay[1].length()-2);
+    }
+
+    public void setInstance(RealtimeArrivalList realtimeArrivalList[]){
+        this.realtimeArrivalList = realtimeArrivalList;
     }
 
     public void tabLayoutSelectListener(){
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                Toast.makeText(getContext(), tab.getPosition()+"", Toast.LENGTH_SHORT).show();
+                switch(tab.getPosition()){
+                    case 0 :
+                        tabLayoutStatus = "상행선";
+                        break;
+                    case 1 :
+                        tabLayoutStatus = "하행선";
+                }
+                setTextView();
             }
 
             @Override
@@ -93,13 +117,5 @@ public class InfoFragment extends Fragment implements AsyncToFragment {
             }
         });
     }
-    @Override
-    public void setRealTime(RealtimeArrivalList realtimeArrivalList[]){
-        System.out.println(realtimeArrivalList[0].getStatnNm());
-    }
-
-
-
-
 
 }

@@ -2,19 +2,17 @@ package com.example.subwayapp.recyclerViewAdapter;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.view.LayoutInflaterCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.subwayapp.R;
 import com.example.subwayapp.ServerConnect;
-import com.example.subwayapp.jsonfile.RealtimeArrivalList;
+import com.example.subwayapp.ServerConnectForArr;
+import com.example.subwayapp.jsonrealtimeinfo.RealtimeArrivalList;
 import com.example.subwayapp.model.GetStationInfo;
 import com.example.subwayapp.model.StationInfo;
 import com.example.subwayapp.model.StationName;
@@ -32,6 +30,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<MyHolder> {
     GetStationInfo getStationInfo;
     ArrayList<StationInfo> list;
     Bundle bundle;
+
 
 
 
@@ -83,7 +82,8 @@ class MyHolder extends RecyclerView.ViewHolder{
     String name;
     TextView tvStation;
     CardView cardView;
-    ServerConnect serverConnect = new ServerConnect();;
+    ServerConnect serverConnect;
+    ServerConnectForArr serverConnectForArr;
     RealtimeArrivalList realtimeArrivalList[];
     public MyHolder(View itemView, final TabLayoutListener tabLayoutListener) {
         super(itemView);
@@ -94,12 +94,16 @@ class MyHolder extends RecyclerView.ViewHolder{
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //serverConnect = new ServerConnect();
-                //realtimeArrivalList = serverConnect.load("http://swopenapi.seoul.go.kr/api/subway/696e614f506a69733131384952495246/json/realtimeStationArrival/1/5/대청");
+                serverConnect = new ServerConnect();
+                serverConnect.load("http://swopenapi.seoul.go.kr/api/subway/" +
+                        "696e614f506a69733131384952495246/json/realtimeStationArrival/1/5/" + name, tabLayoutListener);
+                serverConnectForArr = new ServerConnectForArr();
+                serverConnectForArr.loadForArrival("http://openapi.seoul.go.kr:8088/686a766b466a697334385a717a6e51/json/SearchSTNTimeTableByIDService/1/5/0151/1/1/");
+
                 //System.out.println(tvStation.getText());
-                Bundle bundle = new Bundle();
-                bundle.putString("stnName", name);
-                tabLayoutListener.tabLayoutInflater(bundle);
+//                Bundle bundle = new Bundle();
+//                bundle.putString("stnName", name);
+                //tabLayoutListener.tabLayoutInflater(bundle);
 
 
             }
